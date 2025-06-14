@@ -7,31 +7,37 @@ import org.springframework.web.client.RestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 @Service
 public class RestApiService {
 
     private static final Logger logger = LoggerFactory.getLogger(RestApiService.class);
     private final RestTemplate restTemplate;
+    private static final String JSONPLACEHOLDER_USERS_URL = "https://jsonplaceholder.typicode.com/users";
 
     @Autowired
     public RestApiService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public RestApiResponseData[] fetchDataFromApi(String apiUrl) {
-        // This is a placeholder URL. Replace with your actual API endpoint.
-        // The response is expected to be an array of RestApiResponseData objects.
-        // Adjust if the API returns a single object or a different structure.
-        logger.info("Fetching data from API: {}", apiUrl);
+    // Updated to fetch a list of users from JSONPlaceholder
+    public List<RestApiResponseData> fetchUsersFromApi() {
+        logger.info("Fetching user data from API: {}", JSONPLACEHOLDER_USERS_URL);
         try {
-            // Example: expecting a JSON array
-            RestApiResponseData[] response = restTemplate.getForObject(apiUrl, RestApiResponseData[].class);
-            logger.info("Successfully fetched {} records from API", response != null ? response.length : 0);
-            return response;
+            RestApiResponseData[] response = restTemplate.getForObject(JSONPLACEHOLDER_USERS_URL, RestApiResponseData[].class);
+            if (response != null) {
+                logger.info("Successfully fetched {} users from API", response.length);
+                return Arrays.asList(response);
+            } else {
+                logger.warn("Received null response from API: {}", JSONPLACEHOLDER_USERS_URL);
+                return Collections.emptyList();
+            }
         } catch (Exception e) {
-            logger.error("Error calling REST API: {}", apiUrl, e);
-            // Handle exceptions appropriately (e.g., return empty array, throw custom exception)
-            return new RestApiResponseData[0];
+            logger.error("Error calling REST API: {}", JSONPLACEHOLDER_USERS_URL, e);
+            return Collections.emptyList();
         }
     }
 }

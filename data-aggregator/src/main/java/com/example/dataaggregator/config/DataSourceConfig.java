@@ -80,7 +80,7 @@ public class DataSourceConfig {
             EntityManagerFactoryBuilder builder,
             @Qualifier("targetDataSource") DataSource dataSource) {
         Map<String, String> jpaProperties = new HashMap<>();
-        jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect"); // Or read from properties
+            jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect"); // Updated for H2
         jpaProperties.put("hibernate.hbm2ddl.auto", "update"); // Or read from properties
         // Add other target-specific JPA properties if needed
 
